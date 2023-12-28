@@ -1,0 +1,43 @@
+#about-us {
+    background-image: url('images/BG.jpg');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    padding: 50px 0; /* Add some padding for better spacing */
+}
+
+.container {
+    max-width: 800px; /* Limit the width of the content for better readability */
+    margin: 0 auto; /* Center the content */
+}
+
+h2 {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    margin-bottom: 20px; /* Add space below headings */
+    text-shadow: 2px 2px 4px #000;
+}
+
+p {
+    margin-bottom: 20px; /* Add space below paragraphs */
+}
+
+/* Style the ordered list */
+ol {
+    margin-bottom: 20px;
+}
+
+/* Style list items within the ordered list */
+ol li {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+/* Style the footer */
+footer {
+    background-color: #333;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+}
