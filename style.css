@@ -41,3 +41,24 @@ footer {
     padding: 20px 0;
     text-align: center;
 }
+
+.product-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.filters {
+    width: 20%;
+    /* Add styling for filters */
+}
+
+.products {
+    width: 75%;
+    /* Add styling for products */
+}
+
+.product {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
