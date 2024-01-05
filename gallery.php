@@ -2,6 +2,8 @@
     include "includes/header.php";
 ?>
 
+<link rel="stylesheet" type="text/css" href="style.css">
+
 <div class="image-wall-container">
 
     <h2 class="gallery-title">Fan Gallery</h2>

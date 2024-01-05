@@ -2,17 +2,36 @@
     include "includes/header.php";
 ?>
 
+<link rel="stylesheet" type="text/css" href="style.css">
+
 <style>
-        #myCarousel {
-            max-width: 1250px; 
-            margin: auto;
-        }
+    body {
+        background-color: black;
+        margin: 0; /* Remove default margin to ensure full coverage */
+        padding: 0; /* Remove default padding to ensure full coverage */
+    }
 
-        .carousel-inner img {
-            max-width: 100%; 
-        }
-    </style>
+    #myCarousel {
+        max-width: 1500px;
+        margin: auto;
+        height: auto; 
+        overflow: hidden; 
+    }
 
+    .carousel-inner {
+        height: 100%; 
+    }
+
+    .carousel-inner img {
+        max-width: 100%;
+        max-height: 800px;
+        height: 100%; 
+        width: auto;
+        margin: 0 auto;
+    }
+</style>
+
+<body>
 <!-- Bootstrap Carousel -->
 <div id="myCarousel" class="carousel slide" data-ride="carousel">
     <div class="carousel-inner">
@@ -57,36 +76,33 @@
     <div class="row">
         <!-- Featured Product 1 -->
         <div class="col-md-4">
-            <div class="card">
-                <img src="products\TheThing.jpg" class="card-img-top" alt="TheThingInAJar">
-                <div class="card-body">
+            <div class="card h-100">
+                <img src="products\TheThing.jpg" class="card-img-top mx-auto" alt="TheThingInAJar">
+                <div class="card-body text-center">
                     <h5 class="card-title">The Thing in a Jar</h5>
-                    <p class="card-text">Description of Product 1.</p>
-                    <a href="#" class="btn btn-primary">Buy Now</a>
+                    <a href="#" class="btn btn-dark">Buy Now</a>
                 </div>
             </div>
         </div>
 
         <!-- Featured Product 2 -->
         <div class="col-md-4">
-            <div class="card">
-                <img src="products\Necronomicon.jpg" class="card-img-top" alt="Necronomicon">
-                <div class="card-body">
-                    <h5 class="card-title"> Necronomicon </h5>
-                    <p class="card-text">Description of Product 2.</p>
-                    <a href="#" class="btn btn-primary">Buy Now</a>
+            <div class="card h-100">
+                <img src="products\Necronomicon.jpg" class="card-img-top mx-auto" alt="Necronomicon">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Necronomicon</h5>
+                    <a href="#" class="btn btn-dark">Buy Now</a>
                 </div>
             </div>
         </div>
 
         <!-- Featured Product 3 -->
         <div class="col-md-4">
-            <div class="card">
-                <img src="products\ReverseBearTrap.png" class="card-img-top" alt=" ReverseBearTrap">
-                <div class="card-body">
+            <div class="card h-100">
+                <img src="products\ReverseBearTrap.png" class="card-img-top mx-auto" alt="ReverseBearTrap">
+                <div class="card-body text-center">
                     <h5 class="card-title">Reverse Bear Trap</h5>
-                    <p class="card-text">Description of Product 3.</p>
-                    <a href="#" class="btn btn-primary">Buy Now</a>
+                    <a href="#" class="btn btn-dark">Buy Now</a>
                 </div>
             </div>
         </div>

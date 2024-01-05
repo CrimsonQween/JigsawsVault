@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Killers Vault - Your Sinister Sanctuary for Authentic and Replicated Horror Movie Memorabilia</title>
 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
@@ -13,6 +16,14 @@
 
     <!-- Custom Styles -->
     <link rel="stylesheet" href="styles.css">
+
+    <style>
+        body {
+            background-color: black;
+            color: white; /* Set text color to white for better visibility */
+        }
+    </style>
+
 </head>
 
 <body>
@@ -32,9 +43,22 @@
                     <li class="nav-item">
                         <a class="nav-link" href="gallery.php">Gallery</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="products.php">Products</a>
-                    </li>
+                    <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Products
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="products.php?category=SAW">Saw</a>
+                                <li><a class="dropdown-item" href="products.php?category=Nightmare On Elm Street">Nightmare On Elm Street</a>
+                                <li><a class="dropdown-item" href="products.php?category=Halloween">Halloween</a>
+                                <li><a class="dropdown-item" href="products.php?category=The Thing">The Thing</a>
+                                <li><a class="dropdown-item" href="products.php?category=Friday The 13th">Friday The 13th</a>
+                                <li><a class="dropdown-item" href="products.php?category=Texas Chainsaw Massacre">Texas Chainsaw Massacre</a>
+                                <li><a class="dropdown-item" href="products.php?category=Scream">Scream</a>
+                                <li><a class="dropdown-item" href="products.php?category=The Evil Dead">The Evil Dead</a>
+                            </ul>
+                        </li>
                     <li class="nav-item">
                         <a class="nav-link" href="account.php">Account</a>
                     </li>
