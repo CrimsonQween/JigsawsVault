@@ -25,4 +25,27 @@ function getCategories($conn) {
     $result = $conn->query($sql);
     return $result->fetch_all(MYSQLI_ASSOC);
 }
+
+function getProductDetails($conn, $productId) {
+    $sql = "SELECT * FROM products WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $productId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 0) {
+        // No product found with the specified ID
+        echo "Product not found.";
+        return null;
+    }
+
+    $productDetails = $result->fetch_assoc();
+
+    $stmt->close();
+
+    return $productDetails;
+}
+
 ?>
+
+
