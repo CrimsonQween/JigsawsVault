@@ -83,7 +83,7 @@ body {
     padding: 0;
 }
 
-#contactcontainer {
+#contact-container{
     max-width: 600px;
     margin: 50px auto;
     background-color: #fff;
@@ -92,7 +92,7 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-h2 {
+#contact-heading {
     color: #333;
     text-align: center;
 }
@@ -121,11 +121,11 @@ input, textarea {
 }
 
 input[type="submit"] {
-    background-color: #4caf50;
+    background-color: #5e0606;
     color: #fff;
     cursor: pointer;
 }
 
 input[type="submit"]:hover {
-    background-color: #45a049;
+    background-color: #aa2222;
 }

@@ -46,6 +46,22 @@ function getProductDetails($conn, $productId) {
     return $productDetails;
 }
 
+function insertFormData($name, $email, $message) {
+    $conn = connectToDatabase();
+
+    // Insert data into the database
+    $sql = "INSERT INTO contact_form (name, email, message) VALUES ('$name', '$email', '$message')";
+
+    if ($conn->query($sql) === TRUE) {
+        echo "Record added successfully";
+    } else {
+        echo "Error: " . $sql . "<br>" . $conn->error;
+    }
+
+    // Close the database connection
+    $conn->close();
+}
+
 ?>
 
 

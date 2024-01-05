@@ -7,7 +7,6 @@
             <h1 class="display-4"><?= htmlspecialchars($product['name']); ?></h1>
             <p class="lead">Price: $<?= number_format(htmlspecialchars($product['price']), 2); ?></p>
             <p class="text-justify"><?= htmlspecialchars($product['description']); ?></p>
-            <!-- Add other product details as needed -->
             <div class="card-actions text-center mt-3">
                 <button class="btn btn-dark btn-lg">Add to Cart</button>
             </div>
