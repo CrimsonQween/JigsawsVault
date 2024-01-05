@@ -65,9 +65,9 @@
                     <li class="nav-item active">
                         <a class="nav-link" href="contact.php">Contact</a>
                     </li>
-                    <a href="cart.html">
+                    <a href="shoppingcart.php">
                         <button type="button" class="btn">
-                            <img src="images/cart.png" alt="Cart" width="20" height="auto" href="cart.html">
+                            <img src="images/cart.png" alt="Cart" width="20" height="auto" >
                         </button>
                     </a>
                     <a href="user1.html">

@@ -62,7 +62,7 @@
 <!-- HTML form for the contact page -->
 <div class="container" id="contact-container">
     <h2 id="contact-heading">Contact Us</h2>
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+    <form method="post" action="submitcontact.php">
         <label for="name">Name:</label>
         <input type="text" name="name" id="name">
         <span class="error"><?php echo $nameErr; ?></span>
