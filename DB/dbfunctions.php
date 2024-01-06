@@ -70,6 +70,7 @@ function addToCart($productId, $productName, $productPrice, $quantity) {
     foreach ($_SESSION['cart'] as $index => $item) {
         if ($item['id'] == $productId) {
             $_SESSION['cart'][$index]['quantity'] += $quantity;
+            $_SESSION['cart'][$index]['total'] = $item['price'] * $_SESSION['cart'][$index]['quantity'];
             return;
         }
     }
@@ -79,8 +80,11 @@ function addToCart($productId, $productName, $productPrice, $quantity) {
         'name' => $productName,
         'price' => $productPrice,
         'quantity' => $quantity,
+        'total' => $productPrice * $quantity,
     );
 }
+
+
 
 function removeFromCart($productId) {
     if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
@@ -98,6 +102,44 @@ function removeFromCart($productId) {
 
 function getCartContents() {
     return isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSION['cart'] : array();
+}
+
+function connectToDatabase() {
+    $servername = "localhost";
+    $username = "root";
+    $password = "";
+    $dbname = "killersvault";
+
+    // Create connection
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    // Check connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    return $conn;
+}
+
+function getWishlistProducts($conn, $wishlist) {
+    $wishlistIds = implode(',', $wishlist);
+    $sql = "SELECT * FROM products WHERE id IN ($wishlistIds)";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    return array();
+}
+
+function getProductReviews($conn, $productId) {
+    $sql = "SELECT * FROM product_reviews WHERE product_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $productId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result->fetch_all(MYSQLI_ASSOC);
 }
 ?>
 

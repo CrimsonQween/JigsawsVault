@@ -171,3 +171,54 @@ th {
 .error-message {
     color: red;
 }
+
+/* LOGIN */
+.login-container {
+    max-width: 400px;
+    margin: 50px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-container h2 {
+    color: #333;
+}
+
+.login-container label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.login-container input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+}
+
+.login-container input[type="submit"] {
+    background-color: #4caf50;
+    color: #fff;
+    cursor: pointer;
+}
+
+.login-container input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+.login-container p {
+    margin-top: 16px;
+    font-size: 14px;
+    color: #666;
+}
+
+.login-container a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+.login-container a:hover {
+    text-decoration: underline;
+}

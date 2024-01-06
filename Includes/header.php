@@ -70,12 +70,12 @@
                             <img src="images/cart.png" alt="Cart" width="20" height="auto" >
                         </button>
                     </a>
-                    <a href="user1.html">
+                    <a href="login.php">
                         <button type="button" class="btn">
                             <img src="images/user.png" alt="User" width="20" height="auto" href="user1.html">
                         </button>
                     </a>
-                    <a href="wishlist.html">
+                    <a href="wishlist.php">
                         <button type="button" class="btn">
                             <img src="images/heart.png" alt="User" width="20" height="auto" href="wishlist.html">
                         </button>
