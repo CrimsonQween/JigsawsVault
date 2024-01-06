@@ -1,16 +1,16 @@
 <?php
+session_start();
+
 include "includes/header.php";
 require_once "DB\db.php";
 require_once "DB\dbfunctions.php";
 
-// Check if the product ID is set in the URL
 if (isset($_GET['id'])) {
     $productId = $_GET['id'];
-    $product = getProductDetails($conn, $productId); // You need to implement this function
+    $product = getProductDetails($conn, $productId);
 
     if ($product) {
-        // Display product details
-?>
+        ?>
         <div class="container mt-5">
             <div class="row">
                 <div class="col-md-6">
@@ -23,8 +23,15 @@ if (isset($_GET['id'])) {
                     <!-- Add description display -->
                     <p><?php echo htmlspecialchars($product['description']); ?></p>
 
-                    <!-- Buy Now Button -->
-                    <a href="#" class="btn btn-primary">Buy Now</a>
+                    <!-- Add to Cart Button -->
+                    <form action="shoppingcart.php" method="post">
+                        <input type="hidden" name="action" value="add_to_cart"> 
+                        <input type="hidden" name="product_id" value="<?php echo $productId; ?>">
+                        <input type="hidden" name="product_name" value="<?php echo htmlspecialchars($product['name']); ?>">
+                        <input type="hidden" name="product_price" value="<?php echo htmlspecialchars($product['price']); ?>">
+                        <input type="number" name="quantity" value="1" min="1">
+                        <button type="submit" class="btn btn-primary">Add To Cart</button>
+                    </form>
 
                     <!-- Wishlist Button -->
                     <button class="btn btn-success" id="addToWishlist">Add to Wishlist</button>
@@ -33,14 +40,11 @@ if (isset($_GET['id'])) {
         </div>
 
         <script>
-            // You may want to use JavaScript to handle the wishlist functionality
             document.getElementById('addToWishlist').addEventListener('click', function() {
-                // You can implement the logic to add the product to the wishlist here
-                // For example, you can use AJAX to send a request to the server to update the user's wishlist
                 alert('Product added to wishlist!');
             });
         </script>
-<?php
+        <?php
     } else {
         echo "<p>Product not found</p>";
     }

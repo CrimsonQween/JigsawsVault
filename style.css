@@ -1,3 +1,4 @@
+
 body {
     background-color: black;
     margin: 0; /* Remove default margin to ensure full coverage */
@@ -128,4 +129,45 @@ input[type="submit"] {
 
 input[type="submit"]:hover {
     background-color: #aa2222;
+}
+
+.shopping-cart {
+    margin: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+.product-name {
+    font-weight: bold;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px;
+    background-color: #3498db;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.success-message {
+    color: green;
+}
+
+.error-message {
+    color: red;
 }

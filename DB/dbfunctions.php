@@ -62,6 +62,43 @@ function insertFormData($name, $email, $message) {
     $conn->close();
 }
 
+function addToCart($productId, $productName, $productPrice, $quantity) {
+    if (!isset($_SESSION['cart'])) {
+        $_SESSION['cart'] = array();
+    }
+
+    foreach ($_SESSION['cart'] as $index => $item) {
+        if ($item['id'] == $productId) {
+            $_SESSION['cart'][$index]['quantity'] += $quantity;
+            return;
+        }
+    }
+
+    $_SESSION['cart'][] = array(
+        'id' => $productId,
+        'name' => $productName,
+        'price' => $productPrice,
+        'quantity' => $quantity,
+    );
+}
+
+function removeFromCart($productId) {
+    if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
+        foreach ($_SESSION['cart'] as $index => $item) {
+            if ($item['id'] == $productId) {
+                // Remove the item from the cart
+                unset($_SESSION['cart'][$index]);
+                // Reset array keys to avoid gaps in the array
+                $_SESSION['cart'] = array_values($_SESSION['cart']);
+                return;
+            }
+        }
+    }
+}
+
+function getCartContents() {
+    return isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSION['cart'] : array();
+}
 ?>
 
 
