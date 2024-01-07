@@ -14,13 +14,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $orderSummary = isset($_SESSION['cart']) ? $_SESSION['cart'] : array();
     $conn = connectToDatabase();
 
+    // Check if 'total' is set in the session
+    $totalWithShipping = isset($_SESSION['total']) ? $_SESSION['total'] + 5.00 : 5.00;
+
     // Insert order information into the 'orders' table
     $orderDate = date('Y-m-d H:i:s');
-    $shippingCost = 5.00; // Update with the actual shipping cost
-    $totalWithShipping = $_SESSION['total'] + $shippingCost;
 
     $sql = "INSERT INTO orders (customer_name, billing_address, card_number, order_date, shipping_cost, total_with_shipping) 
-            VALUES ('$billingName', '$billingAddress', '$cardNumber', '$orderDate', '$shippingCost', '$totalWithShipping')";
+            VALUES ('$billingName', '$billingAddress', '$cardNumber', '$orderDate', '5.00', '$totalWithShipping')";
 
     if ($conn->query($sql) === TRUE) {
         // Retrieve the last inserted order ID
