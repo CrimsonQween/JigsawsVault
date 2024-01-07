@@ -7,6 +7,12 @@ require_once "DB\dbfunctions.php";
 
 // Retrieve order summary from the session
 $orderSummary = isset($_SESSION['cart']) ? $_SESSION['cart'] : array();
+
+// Retrieve calculated values from query parameters
+$subtotal = isset($_GET['subtotal']) ? $_GET['subtotal'] : 0;
+$tax = isset($_GET['tax']) ? $_GET['tax'] : 0;
+$shippingCost = isset($_GET['shipping_cost']) ? $_GET['shipping_cost'] : 0;
+$total = isset($_GET['total']) ? $_GET['total'] : 0;
 ?>
 
 <section class="container mt-4">
@@ -67,6 +73,13 @@ $orderSummary = isset($_SESSION['cart']) ? $_SESSION['cart'] : array();
                 </div>
 
                 <!-- Add more form fields for payment information (e.g., expiration date, CVV, etc.) -->
+
+                <!-- Display calculated values from the shopping cart page -->
+                <h3>Order Summary</h3>
+                <p>Subtotal: $<?php echo number_format($subtotal, 2); ?></p>
+                <p>Tax: $<?php echo number_format($tax, 2); ?></p>
+                <p>Shipping Cost: $<?php echo number_format($shippingCost, 2); ?></p>
+                <p>Total: $<?php echo number_format($total, 2); ?></p>
 
                 <button type="submit" class="btn btn-primary">Place Order</button>
             </form>

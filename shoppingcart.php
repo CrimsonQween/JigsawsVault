@@ -69,16 +69,20 @@ $cartContents = getCartContents();
                         foreach ($cartContents as $item) {
                             $subtotal += $item['price'] * $item['quantity'];
                         }
+                        $shippingCostPercentage = 0.10; // 10% of the subtotal as shipping cost
+                        $shippingCost = $subtotal * $shippingCostPercentage;
                         $tax = $subtotal * 0.16; // Assuming 16% tax, adjust as needed
-                        $total = $subtotal + $tax;
+                        $total = $subtotal + $tax + $shippingCost;
                         ?>
                         <p class="card-text">Subtotal: $<?php echo number_format($subtotal, 2); ?></p>
                         <p class="card-text">Tax: $<?php echo number_format($tax, 2); ?></p>
+                        <p class="card-text">Shipping Cost: $<?php echo number_format($shippingCost, 2); ?></p>
                         <p class="card-text">Total: $<?php echo number_format($total, 2); ?></p>
-                        <a href="checkout.php" class="btn btn-primary">Proceed to Checkout</a>
+                        <a href="checkout.php?subtotal=<?php echo $subtotal; ?>&tax=<?php echo $tax; ?>&shipping_cost=<?php echo $shippingCost; ?>&total=<?php echo $total; ?>" class="btn btn-primary">Proceed to Checkout</a>
                     <?php else: ?>
                         <p class="card-text">Subtotal: $0.00</p>
                         <p class="card-text">Tax: $0.00</p>
+                        <p class="card-text">Shipping Cost: $0.00</p>
                         <p class="card-text">Total: $0.00</p>
                     <?php endif; ?>
                 </div>

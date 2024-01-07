@@ -121,17 +121,42 @@ function connectToDatabase() {
     return $conn;
 }
 
-function getWishlistProducts($conn, $wishlist) {
-    $wishlistIds = implode(',', $wishlist);
-    $sql = "SELECT * FROM products WHERE id IN ($wishlistIds)";
-    $result = $conn->query($sql);
+function addToWishlist($conn, $productId) {
+    session_start();
 
-    if ($result->num_rows > 0) {
-        return $result->fetch_all(MYSQLI_ASSOC);
+    if (!isset($_SESSION['wishlist'])) {
+        $_SESSION['wishlist'] = array();
     }
 
-    return array();
+    if (!in_array($productId, $_SESSION['wishlist'])) {
+        $_SESSION['wishlist'][] = $productId;
+    }
 }
+
+function updateWishlist($conn) {
+    $wishlistProducts = getWishlistProducts($conn, $_SESSION['wishlist']);
+
+    foreach ($wishlistProducts as $product) {
+        echo '<div class="row">';
+        echo '<div class="col-md-4 mb-4">';
+        echo '<div class="card">';
+        echo '<img src="' . htmlspecialchars($product['imagePath']) . '" class="card-img-top" alt="' . htmlspecialchars($product['name']) . '">';
+        echo '<div class="card-body">';
+        echo '<h5 class="card-title">' . htmlspecialchars($product['name']) . '</h5>';
+        echo '<p class="card-text">$' . htmlspecialchars($product['price']) . '</p>';
+        echo '<form action="wishlist.php" method="post">';
+        echo '<input type="hidden" name="action" value="remove_from_wishlist">';
+        echo '<input type="hidden" name="product_id" value="' . $product['id'] . '">';
+        echo '<button type="submit" class="btn btn-outline-danger">Remove from Wishlist</button>';
+        echo '</form>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+    }
+}
+
+
 
 function getProductReviews($conn, $productId) {
     $sql = "SELECT * FROM product_reviews WHERE product_id = ?";
@@ -141,6 +166,8 @@ function getProductReviews($conn, $productId) {
     $result = $stmt->get_result();
     return $result->fetch_all(MYSQLI_ASSOC);
 }
+
+
 ?>
 
 

@@ -16,8 +16,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Insert order information into the 'orders' table
     $orderDate = date('Y-m-d H:i:s');
-    $sql = "INSERT INTO orders (customer_name, billing_address, card_number, order_date) 
-            VALUES ('$billingName', '$billingAddress', '$cardNumber', '$orderDate')";
+    $shippingCost = 5.00; // Update with the actual shipping cost
+    $totalWithShipping = $_SESSION['total'] + $shippingCost;
+
+    $sql = "INSERT INTO orders (customer_name, billing_address, card_number, order_date, shipping_cost, total_with_shipping) 
+            VALUES ('$billingName', '$billingAddress', '$cardNumber', '$orderDate', '$shippingCost', '$totalWithShipping')";
 
     if ($conn->query($sql) === TRUE) {
         // Retrieve the last inserted order ID

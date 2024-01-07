@@ -38,45 +38,49 @@ if (isset($_POST['action']) && $_POST['action'] === 'remove_from_wishlist') {
 // Wishlist Page
 ?>
 <body>
-    <section class="container mt-4">
-        <h2>Your Wishlist</h2>
-
-        <?php
-        // Check if $_SESSION['wishlist'] is an array
-        if (isset($_SESSION['wishlist']) && is_array($_SESSION['wishlist']) && !empty($_SESSION['wishlist'])) {
-            // Get product details for items in the wishlist
-            $wishlistProducts = getWishlistProducts($conn, $_SESSION['wishlist']);
-
-            foreach ($wishlistProducts as $product) {
-                ?>
-                <div class="row">
-                    <div class="col-md-4 mb-4">
-                        <div class="card">
-                            <img src="<?php echo htmlspecialchars($product['imagePath']); ?>" class="card-img-top" alt="<?php echo htmlspecialchars($product['name']); ?>">
-                            <div class="card-body">
-                                <h5 class="card-title"><?php echo htmlspecialchars($product['name']); ?></h5>
-                                <p class="card-text">$<?php echo htmlspecialchars($product['price']); ?></p>
-                                <form action="wishlist.php" method="post">
-                                    <input type="hidden" name="action" value="remove_from_wishlist">
-                                    <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
-                                    <button type="submit" class="btn btn-outline-danger">Remove from Wishlist</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <?php
-            }
-        } else {
-            echo "<p>Your wishlist is empty</p>";
-        }
-        ?>
+    <section class="container mt-4" id="wishlist-container">
+        <?php include "wishlist_content.php"; ?>
     </section>
 
     <!-- Bootstrap JS and Popper.js (Optional, depending on your requirements) -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+    var wishlistButtons = document.querySelectorAll('.addToWishlist');
+    wishlistButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            var productId = this.getAttribute('data-product-id');
+            addToWishlist(<?php echo $productId; ?>);
+        });
+    });
+
+    function addToWishlist(productId) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'wishlist.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                updateWishlist();
+                alert('Product added to wishlist!');
+            }
+        };
+        xhr.send('action=add_to_wishlist&product_id=' + productId);
+    }
+
+    function updateWishlist() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'wishlist_content.php', true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                document.getElementById('wishlist-container').innerHTML = xhr.responseText;
+            }
+        };
+        xhr.send();
+    }
+</script>
+
 </body>
 
 </html>
