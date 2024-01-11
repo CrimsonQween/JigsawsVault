@@ -1,89 +1,64 @@
 <?php
-session_start();
-include "includes/header.php";
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();}
+
+require_once "DB\db.php";
 require_once "DB\dbfunctions.php";
 
-// Check if the action is to add to the wishlist
-if (!isset($_SESSION['wishlist'])) {
-    $_SESSION['wishlist'] = array();
-}
+$userId = $_SESSION['userId'];
+$myWishlist = getUserWishlist($conn, $userId);
 
-// Check if the action is to add to the wishlist
-if (isset($_POST['action']) && $_POST['action'] === 'add_to_wishlist') {
-    // Get the product ID from the POST data
-    $productId = $_POST['product_id'];
-
-    // Check if the product is not already in the wishlist
-    if (!in_array($productId, $_SESSION['wishlist'])) {
-        // Add the product ID to the wishlist
-        $_SESSION['wishlist'][] = $productId;
-    }
-}
-
-// Check if the action is to remove from the wishlist
-if (isset($_POST['action']) && $_POST['action'] === 'remove_from_wishlist') {
-    // Get the product ID from the POST data
-    $productId = $_POST['product_id'];
-
-    // Check if the product is in the wishlist
-    $wishlistIndex = array_search($productId, $_SESSION['wishlist']);
-    if ($wishlistIndex !== false) {
-        // Remove the product from the wishlist
-        unset($_SESSION['wishlist'][$wishlistIndex]);
-        // Reset array keys
-        $_SESSION['wishlist'] = array_values($_SESSION['wishlist']);
-    }
-}
-
-// Wishlist Page
+include "includes/header.php";
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wishlist</title>
+<link rel="stylesheet" href="style.css">
+
+<script>
+        function removeItem(itemId) {
+            if (confirm("Are you sure you want to remove this item from your wishlist?")) {
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        location.reload(); 
+                    }
+                };
+                xhr.open("GET", "remove_item.php?itemId=" + itemId, true);
+                xhr.send();
+            }
+        }
+    </script>
+
+
+</head>
 <body>
-    <section class="container mt-4" id="wishlist-container">
-        <?php include "wishlist_content.php"; ?>
-    </section>
 
-    <!-- Bootstrap JS and Popper.js (Optional, depending on your requirements) -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <h1>My Wishlist</h1>
 
-    <script>
-    var wishlistButtons = document.querySelectorAll('.addToWishlist');
-    wishlistButtons.forEach(function(button) {
-        button.addEventListener('click', function() {
-            var productId = this.getAttribute('data-product-id');
-            addToWishlist(<?php echo $productId; ?>);
-        });
-    });
+        <ul id="wishlist">
 
-    function addToWishlist(productId) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'wishlist.php', true);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                updateWishlist();
-                alert('Product added to wishlist!');
-            }
-        };
-        xhr.send('action=add_to_wishlist&product_id=' + productId);
-    }
+        <?php foreach ($myWishlist as $item): ?>
 
-    function updateWishlist() {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'wishlist_content.php', true);
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                document.getElementById('wishlist-container').innerHTML = xhr.responseText;
-            }
-        };
-        xhr.send();
-    }
-</script>
+    <li class="wishlist-item">
+        <img src="<?php echo htmlspecialchars($item['imagePath']); ?>" alt="Product Image">
+        <span><?php echo htmlspecialchars($item['name']); ?></span>
+        <span><?php echo htmlspecialchars("€" . $item['price']); ?></span>
+        <button class="remove-btn" onclick="removeItem(<?php echo $item['id']; ?>)">Remove</button>
+    </li>
+
+    <?php endforeach; ?>
+    
+        </ul>
+
 
 </body>
-
 </html>
+
 
 <?php include "includes/footer.php"; ?>
 

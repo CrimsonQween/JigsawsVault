@@ -1,28 +1,24 @@
 <?php
-include "DB\db.php";
+include "DB\db.php"; 
 
-// Assuming your db.php file contains the $connection variable
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST["username"];
+    $email = $_POST["email"];
     $password = $_POST["password"];
+    $isAdmin = isset($_POST['is_admin']) ? 1 : 0; // Check if the checkbox is checked
 
-    // Check if the username is already taken
-    $check_query = "SELECT * FROM users WHERE username = '$username'";
-    $check_result = mysqli_query($conn, $check_query);
+    $stmt = $conn->prepare("INSERT INTO users (username, email, password, is_admin) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("sssi", $username, $email, $password, $isAdmin);
 
-    if ($check_result && mysqli_num_rows($check_result) > 0) {
-        // Username is already taken
-        echo "Username is already taken. Please choose another.";
+    if ($stmt->execute()) {
+        // Registration successful, redirect to login page or any other page
+        header("Location: login.php");
+        exit();
     } else {
-        // Insert new user into the database
-        $insert_query = "INSERT INTO users (username, password) VALUES ('$username', '$password')";
-        $insert_result = mysqli_query($conn, $insert_query);
-
-        if ($insert_result) {
-            echo "Registration successful! You can now <a href='login.php'>login</a>.";
-        } else {
-            echo "Registration failed. Please try again.";
-        }
+        // Registration failed
+        echo "Registration failed. Please try again.";
     }
+
+    $stmt->close();
 }
 ?>

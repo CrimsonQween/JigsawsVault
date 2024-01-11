@@ -222,3 +222,25 @@ th {
 .login-container a:hover {
     text-decoration: underline;
 }
+
+.wishlist-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+.wishlist-item img {
+    max-width: 100px;
+    max-height: 100px;
+    margin-right: 10px;
+}
+
+.remove-btn {
+    background-color: #ff6666;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}

@@ -59,25 +59,39 @@
                                 <li><a class="dropdown-item" href="products.php?category=The Evil Dead">The Evil Dead</a>
                             </ul>
                         </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="account.php">Account</a>
-                    </li>
-                    <li class="nav-item active">
+                    <li class="nav-item ">
                         <a class="nav-link" href="contact.php">Contact</a>
                     </li>
+                    <?php
+                if (isset($_SESSION['userId'])) {
+                    // If user is logged in, display Sign Out button
+                    echo '
+                        <li class="nav-item">
+                            <a class="nav-link" href="login.php">Sign Out</a>
+                        </li>
+                    ';
+                } else {
+                    // If user is not logged in, display Login button
+                    echo '
+                        <li class="nav-item">
+                            <a class="nav-link" href="login.php">Login</a>
+                        </li>
+                    ';
+                }
+                ?>
                     <a href="shoppingcart.php">
                         <button type="button" class="btn">
                             <img src="images/cart.png" alt="Cart" width="20" height="auto" >
                         </button>
                     </a>
-                    <a href="login.php">
-                        <button type="button" class="btn">
-                            <img src="images/user.png" alt="User" width="20" height="auto" href="user1.html">
-                        </button>
-                    </a>
                     <a href="wishlist.php">
                         <button type="button" class="btn">
-                            <img src="images/heart.png" alt="User" width="20" height="auto" href="wishlist.html">
+                            <img src="images/heart.png" alt="User" width="20" height="auto" >
+                        </button>
+                    </a>
+                    <a href="adminproduct.php">
+                        <button type="button" class="btn">
+                            <img src="images\add.png" alt="User" width="20" height="auto" >
                         </button>
                     </a>
                 </ul>

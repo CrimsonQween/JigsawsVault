@@ -1,5 +1,8 @@
 <?php
     include "includes/header.php";
+    include "DB\db.php";
+    include "DB\dbfunctions.php";
+    $products = Get3Prod();
 ?>
 
 <link rel="stylesheet" type="text/css" href="style.css">
@@ -74,38 +77,20 @@
 <div class="container mt-5">
     <h2 class="text-center mb-4">Featured Products</h2>
     <div class="row">
-        <!-- Featured Product 1 -->
-        <div class="col-md-4">
-            <div class="card h-100">
-                <img src="products\TheThing.jpg" class="card-img-top mx-auto" alt="TheThingInAJar">
-                <div class="card-body text-center">
-                    <h5 class="card-title">The Thing in a Jar</h5>
-                    <a href="#" class="btn btn-dark">Buy Now</a>
+    <?php foreach ($products as $product): ?>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 d-flex flex-column justify-content-between">
+                        <img src="<?php echo htmlspecialchars($product['imagePath']); ?>" class="card-img-top card-img-custom img-fluid mx-auto my-2" alt="<?php echo htmlspecialchars($product['name']); ?>">
+                        <div class="card-body">
+                            <h5 class="card-title"><?php echo htmlspecialchars($product['name']); ?></h5>
+                            <p class="card-text">$<?php echo htmlspecialchars($product['price']); ?></p>
+                        </div>
+                        <div class="card-actions text-center">
+                        <a href="product.php?id=<?php echo htmlspecialchars($product['id']); ?>" class="btn btn-dark">View Details</a>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Featured Product 2 -->
-        <div class="col-md-4">
-            <div class="card h-100">
-                <img src="products\Necronomicon.jpg" class="card-img-top mx-auto" alt="Necronomicon">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Necronomicon</h5>
-                    <a href="#" class="btn btn-dark">Buy Now</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Featured Product 3 -->
-        <div class="col-md-4">
-            <div class="card h-100">
-                <img src="products\ReverseBearTrap.png" class="card-img-top mx-auto" alt="ReverseBearTrap">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Reverse Bear Trap</h5>
-                    <a href="#" class="btn btn-dark">Buy Now</a>
-                </div>
-            </div>
-        </div>
+            <?php endforeach; ?>
     </div>
 </div>
 

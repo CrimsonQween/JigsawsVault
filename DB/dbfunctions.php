@@ -1,15 +1,25 @@
 <?php
-function getProducts($conn, $categories) {
-    $sql = "SELECT p.id, p.name, p.categoryid, p.price, p.imagePath FROM products p
-            JOIN category AS c ON  p.categoryid = c.id
-            WHERE c.categoryname = ?";
+function getProducts($conn, $categories = null) {
+    $sql = "SELECT p.id, p.name, p.categoryid, p.price, p.imagePath FROM products p";
+
+    // If categories are specified, join with the category table and filter by category
+    if ($categories !== null) {
+        $sql .= " JOIN category AS c ON p.categoryid = c.id WHERE c.categoryname = ?";
+    }
+
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $categories);
+
+    // Bind parameters only if categories are specified
+    if ($categories !== null) {
+        $stmt->bind_param("s", $categories);
+    }
+
     $stmt->execute();
     $result = $stmt->get_result();
+
     if ($result->num_rows === 0) {
         // No products found
-        echo "No products found for the selected category.";
+        echo "No products found.";
         return [];
     }
 
@@ -18,7 +28,7 @@ function getProducts($conn, $categories) {
     $stmt->close();
 
     return $products;
-} 
+}
 
 function getCategories($conn) {
     $sql = "SELECT * FROM category";
@@ -121,53 +131,371 @@ function connectToDatabase() {
     return $conn;
 }
 
-function addToWishlist($conn, $productId) {
-    session_start();
 
-    if (!isset($_SESSION['wishlist'])) {
-        $_SESSION['wishlist'] = array();
+
+function getCountries() {
+    global $conn;
+
+    $sql = "SELECT * FROM countries";
+    $result = $conn->query($sql);
+
+    $countries = array();
+
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $countries[] = $row;
+        }
     }
 
-    if (!in_array($productId, $_SESSION['wishlist'])) {
-        $_SESSION['wishlist'][] = $productId;
+    return $countries;
+}
+
+// Function to get cities based on the selected country
+function getCitiesByCountry($countryId) {
+    global $conn;
+
+    $sql = "SELECT * FROM cities WHERE country_id = $countryId";
+    $result = $conn->query($sql);
+
+    $cities = array();
+
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $cities[] = $row;
+        }
+    }
+
+    return $cities;
+}
+
+// Function to get streets based on the selected city
+function getStreetsByCity($cityId) {
+    global $conn;
+
+    // Use a prepared statement to prevent SQL injection
+    $sql = "SELECT * FROM streets WHERE city_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $cityId);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+
+    $streets = array();
+
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $streets[] = $row;
+        }
+    }
+
+    $stmt->close();
+
+    return $streets;
+}
+
+
+function Get3Prod($limit = 3) {
+    global $conn;
+
+    $sql = "SELECT id, name, price, imagePath FROM Products LIMIT ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $limit);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+    $products = $result->fetch_all(MYSQLI_ASSOC);
+
+    $stmt->close();
+
+    return $products;
+}
+
+function getUserWishlist($conn, $userId){
+    $sql = "SELECT p.* FROM wishlist w 
+    JOIN products p ON w.productid = p.id 
+    WHERE w.userid = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $userId);
+$stmt->execute();
+$result = $stmt->get_result();
+return $result->fetch_all(MYSQLI_ASSOC);
+}
+
+function verifyUser($conn, $username, $password) {
+    $sql = "SELECT id, is_admin, password FROM users WHERE username = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $user = $result->fetch_assoc();
+        if ($user['password'] === $password) {
+            return array("id" => $user['id'], "is_admin" => $user['is_admin']);
+        }
+    }
+    return false;
+}
+
+function removeItemFromDatabase($conn, $itemId) {
+    $itemId = intval($itemId);
+
+    // Prepare and execute the SQL query to delete the item
+    $sql = "DELETE FROM wishlist WHERE id = $itemId";
+
+    if ($conn->query($sql) === TRUE) {
+        // Item removed successfully
+        return true;
+    } else {
+        // Error occurred
+        return false;
     }
 }
 
-function updateWishlist($conn) {
-    $wishlistProducts = getWishlistProducts($conn, $_SESSION['wishlist']);
+function addProduct($conn, $name, $categoryid, $price, $imagePath) {
+    $sql = "INSERT INTO products (name, categoryid, price, imagePath) VALUES (?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sids", $name, $categoryid, $price, $imagePath);
 
-    foreach ($wishlistProducts as $product) {
-        echo '<div class="row">';
-        echo '<div class="col-md-4 mb-4">';
-        echo '<div class="card">';
-        echo '<img src="' . htmlspecialchars($product['imagePath']) . '" class="card-img-top" alt="' . htmlspecialchars($product['name']) . '">';
-        echo '<div class="card-body">';
-        echo '<h5 class="card-title">' . htmlspecialchars($product['name']) . '</h5>';
-        echo '<p class="card-text">$' . htmlspecialchars($product['price']) . '</p>';
-        echo '<form action="wishlist.php" method="post">';
-        echo '<input type="hidden" name="action" value="remove_from_wishlist">';
-        echo '<input type="hidden" name="product_id" value="' . $product['id'] . '">';
-        echo '<button type="submit" class="btn btn-outline-danger">Remove from Wishlist</button>';
-        echo '</form>';
-        echo '</div>';
-        echo '</div>';
-        echo '</div>';
-        echo '</div>';
+    if ($stmt->execute()) {
+        // Product added successfully
+        return true;
+    } else {
+        // Error occurred
+        return false;
+    }
+}
+
+function editProduct($conn, $productId, $name, $categoryid, $price, $imagePath) {
+    $sql = "UPDATE products SET name = ?, categoryid = ?, price = ?, imagePath = ? WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sidsi", $name, $categoryid, $price, $imagePath, $productId);
+
+    if ($stmt->execute()) {
+        // Product updated successfully
+        return true;
+    } else {
+        // Error occurred
+        return false;
+    }
+}
+
+
+function deleteProduct($conn, $productId) {
+    // Delete related records from the order_items table
+    $orderItemsDeleteSql = "DELETE FROM order_items WHERE product_id = ?";
+    $orderItemsStmt = $conn->prepare($orderItemsDeleteSql);
+    $orderItemsStmt->bind_param("i", $productId);
+
+    if (!$orderItemsStmt->execute()) {
+        // Handle the error if necessary
+        return false;
+    }
+
+    // Now, delete the product from the products table
+    $productDeleteSql = "DELETE FROM products WHERE id = ?";
+    $productStmt = $conn->prepare($productDeleteSql);
+    $productStmt->bind_param("i", $productId);
+
+    if ($productStmt->execute()) {
+        // Product deleted successfully
+        return true;
+    } else {
+        // Error occurred
+        return false;
     }
 }
 
 
 
-function getProductReviews($conn, $productId) {
+function getUsers($conn) {
+    $sql = "SELECT * FROM users";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        return $result->fetch_all(MYSQLI_ASSOC);
+    } else {
+        // No users found
+        return [];
+    }
+}
+
+
+function editUser($conn, $userId, $newRole) {
+    $sql = "UPDATE users SET is_admin = ? WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ii", $newRole, $userId);
+
+    if ($stmt->execute()) {
+        // User role updated successfully
+        return true;
+    } else {
+        // Error occurred
+        return false;
+    }
+}
+
+function deleteUser($conn, $userId) {
+    $sql = "DELETE FROM users WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $userId);
+
+    if ($stmt->execute()) {
+        // User deleted successfully
+        return true;
+    } else {
+        // Error occurred
+        return false;
+    }
+}
+
+function getOrders($conn) {
+    $sql = "SELECT o.order_id, o.customer_name, GROUP_CONCAT(p.name SEPARATOR ', ') AS product_names, o.total_with_shipping, o.status 
+            FROM orders o
+            LEFT JOIN order_items oi ON o.order_id = oi.order_id
+            LEFT JOIN products p ON oi.product_id = p.id
+            GROUP BY o.order_id, o.customer_name, o.total_with_shipping, o.status";
+
+    $result = $conn->query($sql);
+
+    $orders = [];
+
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $orders[] = $row;
+        }
+    }
+
+    return $orders;
+}
+
+function updateOrderStatus($conn, $orderId, $newStatus) {
+    $sql = "UPDATE orders SET status = ? WHERE order_id = ?";
+    $stmt = $conn->prepare($sql);
+    
+    if (!$stmt) {
+        echo "Error preparing statement: " . $conn->error;
+        return false;
+    }
+
+    $stmt->bind_param("ss", $newStatus, $orderId);
+
+    if (!$stmt->execute()) {
+        echo "Error executing query: " . $stmt->error;
+        return false;
+    }
+
+    return true;
+}
+
+
+function getUsersFromDatabase() {
+    global $conn;
+
+    $users = array();
+
+    $query = "SELECT id, username, email, is_admin FROM users";
+    $result = mysqli_query($conn, $query);
+
+    if ($result) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $users[] = $row;
+        }
+    } else {
+        echo "Error: " . mysqli_error($conn);
+    }
+
+    mysqli_free_result($result);
+
+    return $users;
+}
+
+function getUserDetails($conn, $userId) {
+    $sql = "SELECT id, username, email, is_admin FROM users WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 0) {
+        // No user found with the specified ID
+        return null;
+    }
+
+    $userDetails = $result->fetch_assoc();
+
+    $stmt->close();
+
+    return $userDetails;
+}
+
+function getProductById($conn, $productId) {
+    $sql = "SELECT * FROM products WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $productId);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_assoc();
+}
+
+function cancelOrder($conn, $order_id) {
+    $order_id = mysqli_real_escape_string($conn, $order_id);
+
+    $deleteOrderItemsQuery = "DELETE FROM order_items WHERE order_id = $order_id";
+
+    if (mysqli_query($conn, $deleteOrderItemsQuery)) {
+        $deleteOrderQuery = "DELETE FROM orders WHERE order_id = $order_id";
+
+        if (mysqli_query($conn, $deleteOrderQuery)) {
+            return true;
+        } else {
+            echo "Error deleting order: " . mysqli_error($conn);
+            return false;
+        }
+    } else {
+        echo "Error deleting order items: " . mysqli_error($conn);
+        return false;
+    }
+}
+
+function getReviewsForProduct($conn, $productId) {
     $sql = "SELECT * FROM product_reviews WHERE product_id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $productId);
     $stmt->execute();
-    $result = $stmt->get_result();
-    return $result->fetch_all(MYSQLI_ASSOC);
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
 
+function insertReview($conn, $productId, $userId, $rating, $comment) {
+    $sql = "INSERT INTO product_reviews (product_id, user_id, rating, comment) VALUES (?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("iiis", $productId, $userId, $rating, $comment);
+    $stmt->execute();
+}
+
+
+function addUser($username, $email, $password, $isAdmin) {
+    global $conn; // Assuming $conn is your database connection
+
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+    $sql = "INSERT INTO users (username, email, password, is_admin) VALUES (?, ?, ?, ?)";
+    
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sssi", $username, $email, $hashedPassword, $isAdmin);
+
+    if ($stmt->execute()) {
+        return true;
+    } else {
+        return false;
+    }
+
+    $stmt->close();
+}
+
 ?>
+
+
 
 
