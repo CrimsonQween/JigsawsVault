@@ -221,6 +221,20 @@ $result = $stmt->get_result();
 return $result->fetch_all(MYSQLI_ASSOC);
 }
 
+function removeItemFromWishlist($conn, $userId, $productIdToRemove) {
+    $query = "DELETE FROM wishlist WHERE userid = ? AND productid = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("ii", $userId, $productIdToRemove);
+
+    if ($stmt->execute()) {
+        // Wishlist item removed successfully
+        return true;
+    } else {
+        // Error occurred
+        return false;
+    }
+}
+
 function verifyUser($conn, $username, $password) {
     $sql = "SELECT id, is_admin, password FROM users WHERE username = ?";
     $stmt = $conn->prepare($sql);
@@ -237,20 +251,7 @@ function verifyUser($conn, $username, $password) {
     return false;
 }
 
-function removeItemFromDatabase($conn, $itemId) {
-    $itemId = intval($itemId);
 
-    // Prepare and execute the SQL query to delete the item
-    $sql = "DELETE FROM wishlist WHERE id = $itemId";
-
-    if ($conn->query($sql) === TRUE) {
-        // Item removed successfully
-        return true;
-    } else {
-        // Error occurred
-        return false;
-    }
-}
 
 function addProduct($conn, $name, $categoryid, $price, $imagePath) {
     $sql = "INSERT INTO products (name, categoryid, price, imagePath) VALUES (?, ?, ?, ?)";
@@ -493,6 +494,7 @@ function addUser($username, $email, $password, $isAdmin) {
 
     $stmt->close();
 }
+
 
 ?>
 

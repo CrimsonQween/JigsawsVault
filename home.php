@@ -15,23 +15,23 @@
     }
 
     #myCarousel {
-        max-width: 1500px;
-        margin: auto;
-        height: auto; 
-        overflow: hidden; 
-    }
+    max-width: 1500px;
+    margin: auto;
+    height: 900px; 
+    overflow: hidden;
+}
 
-    .carousel-inner {
-        height: 100%; 
-    }
+.carousel-inner {
+    height: 100%;
+}
 
-    .carousel-inner img {
-        max-width: 100%;
-        max-height: 800px;
-        height: 100%; 
-        width: auto;
-        margin: 0 auto;
-    }
+.carousel-inner img {
+    max-width: 100%;
+    max-height: 100%; 
+    height: auto;
+    width: auto;
+    margin: 0 auto;
+}
 </style>
 
 <body>

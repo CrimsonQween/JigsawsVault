@@ -7,10 +7,10 @@ require_once "DB\dbfunctions.php";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST["addProduct"])) {
         // Add Product
-        $name = $_POST["name"];
-        $categoryid = $_POST["categoryid"];
-        $price = $_POST["price"];
-        $imagePath = $_POST["imagePath"];
+        $name = isset($_POST["name"]) ? $_POST["name"] : null;
+        $categoryid = isset($_POST["categoryid"]) ? $_POST["categoryid"] : null;
+        $price = isset($_POST["price"]) ? $_POST["price"] : null;
+        $imagePath = isset($_POST["imagePath"]) ? $_POST["imagePath"] : null;
 
         if (addProduct(connectToDatabase(), $name, $categoryid, $price, $imagePath)) {
             echo "Product added successfully";
@@ -19,11 +19,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     } elseif (isset($_POST["editProduct"])) {
         // Edit Product
-        $productId = $_POST["productId"];
-        $name = $_POST["name"];
-        $categoryid = $_POST["categoryid"];
-        $price = $_POST["price"];
-        $imagePath = $_POST["imagePath"];
+        $productId = isset($_POST["productId"]) ? $_POST["productId"] : null;
+        $name = isset($_POST["name"]) ? $_POST["name"] : null;
+        $categoryid = isset($_POST["categoryid"]) ? $_POST["categoryid"] : null;
+        $price = isset($_POST["price"]) ? $_POST["price"] : null;
+        $imagePath = isset($_POST["imagePath"]) ? $_POST["imagePath"] : null;
 
         if (editProduct(connectToDatabase(), $productId, $name, $categoryid, $price, $imagePath)) {
             echo "Product edited successfully";
@@ -32,9 +32,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     } elseif (isset($_POST["deleteProduct"])) {
         // Delete Product
-        $productId = $_POST["productId"];
+        $productIdToDelete = isset($_POST["selectedProductId"]) ? $_POST["selectedProductId"] : null;
 
-        if (deleteProduct(connectToDatabase(), $productId)) {
+        if (deleteProduct(connectToDatabase(), $productIdToDelete)) {
             echo "Product deleted successfully";
         } else {
             echo "Error deleting the product";
@@ -42,7 +42,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-include "includes/header.php";?>
+include "includes/header.php";
+?>
 
 <!-- Add Product Form -->
 <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
@@ -85,43 +86,44 @@ include "includes/header.php";?>
     </select><br>
 
     <input type="submit" name="selectProduct" value="Select Product">
-
-    <?php
-    // Check if a product is selected
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["selectProduct"])) {
-        $selectedProductId = $_POST["productId"];
-        $selectedProduct = getProductById(connectToDatabase(), $selectedProductId);
-
-        // Display existing product details for editing
-        if ($selectedProduct) {
-            echo "<label for=\"name\">Product Name:</label>";
-            echo "<input type=\"text\" name=\"name\" value=\"{$selectedProduct['name']}\"><br>";
-
-            echo "<label for=\"categoryid\">Category:</label>";
-            echo "<select name=\"categoryid\" required>";
-            $categories = getCategories(connectToDatabase());
-            foreach ($categories as $category) {
-                $selected = ($category['id'] == $selectedProduct['categoryid']) ? 'selected' : '';
-                echo "<option value=\"{$category['id']}\" $selected>{$category['categoryname']}</option>";
-            }
-            echo "</select><br>";
-
-            echo "<label for=\"price\">Price:</label>";
-            echo "<input type=\"text\" name=\"price\" value=\"{$selectedProduct['price']}\"><br>";
-
-            echo "<label for=\"imagePath\">Image Path:</label>";
-            echo "<input type=\"text\" name=\"imagePath\" value=\"{$selectedProduct['imagePath']}\"><br>";
-
-            // Include the hidden field for passing productId to the next step
-            echo "<input type=\"hidden\" name=\"selectedProductId\" value=\"{$selectedProductId}\">";
-        }
-    }
-    ?>
-
-    <input type="submit" name="editProduct" value="Edit Product">
-    <input type="submit" name="deleteProduct" value="Delete Product">
 </form>
 
+<?php
+// Check if a product is selected
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["selectProduct"])) {
+    $selectedProductId = isset($_POST["productId"]) ? $_POST["productId"] : null;
+    $selectedProduct = getProductById(connectToDatabase(), $selectedProductId);
+
+    // Display existing product details for editing
+    if ($selectedProduct) {
+        echo "<form method=\"post\" action=\"{$_SERVER['PHP_SELF']}\">";
+
+        echo "<label for=\"name\">Product Name:</label>";
+        echo "<input type=\"text\" name=\"name\" value=\"{$selectedProduct['name']}\"><br>";
+
+        echo "<label for=\"categoryid\">Category:</label>";
+        echo "<select name=\"categoryid\" required>";
+        $categories = getCategories(connectToDatabase());
+        foreach ($categories as $category) {
+            $selected = ($category['id'] == $selectedProduct['categoryid']) ? 'selected' : '';
+            echo "<option value=\"{$category['id']}\" $selected>{$category['categoryname']}</option>";
+        }
+        echo "</select><br>";
+
+        echo "<label for=\"price\">Price:</label>";
+        echo "<input type=\"text\" name=\"price\" value=\"{$selectedProduct['price']}\"><br>";
+
+        echo "<label for=\"imagePath\">Image Path:</label>";
+        echo "<input type=\"text\" name=\"imagePath\" value=\"{$selectedProduct['imagePath']}\"><br>";
+
+        echo "<input type=\"submit\" name=\"editProduct\" value=\"Edit Product\">";
+        echo "<input type=\"submit\" name=\"deleteProduct\" value=\"Delete Product\">";
+
+        echo "</form>";
+    }
+}
+?>
+</form>
 
 <?php
 include "includes/footer.php";

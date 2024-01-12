@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             header('Location: admin_dashboard.php'); // Redirect to admin page
             exit(); // Ensure no further code execution after redirect
         } else {
-            header('Location: account.php'); // Redirect to user account page
+            header('Location: home.php'); // Redirect to user account page
             exit(); // Ensure no further code execution after redirect
         }
     } else {
