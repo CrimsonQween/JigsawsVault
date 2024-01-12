@@ -3,6 +3,9 @@ session_start();
 include "includes/header.php"; 
 ?>
 
+<link rel="stylesheet" type="text/css" href="style.css">
+
+
 <div class="admin-dashboard">
     <h2>Welcome, <?php echo $_SESSION['username']; ?> (Admin)</h2>
     <ul>

@@ -32,9 +32,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     } elseif (isset($_POST["deleteProduct"])) {
         // Delete Product
-        $productIdToDelete = isset($_POST["selectedProductId"]) ? $_POST["selectedProductId"] : null;
+        $productId = isset($_POST["productId"]) ? $_POST["productId"] : null;
 
-        if (deleteProduct(connectToDatabase(), $productIdToDelete)) {
+        if (deleteProduct(connectToDatabase(), $productId)) {
             echo "Product deleted successfully";
         } else {
             echo "Error deleting the product";
@@ -94,7 +94,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["selectProduct"])) {
     $selectedProductId = isset($_POST["productId"]) ? $_POST["productId"] : null;
     $selectedProduct = getProductById(connectToDatabase(), $selectedProductId);
 
-    // Display existing product details for editing
+    // Display existing product details for editing and deleting
     if ($selectedProduct) {
         echo "<form method=\"post\" action=\"{$_SERVER['PHP_SELF']}\">";
 
@@ -116,10 +116,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["selectProduct"])) {
         echo "<label for=\"imagePath\">Image Path:</label>";
         echo "<input type=\"text\" name=\"imagePath\" value=\"{$selectedProduct['imagePath']}\"><br>";
 
+        // Include the hidden field for passing productId to the next step
+        echo "<input type=\"hidden\" name=\"selectedProductId\" value=\"{$selectedProductId}\">";
+
+        // Submit button to submit the edited product details
         echo "<input type=\"submit\" name=\"editProduct\" value=\"Edit Product\">";
+
+        // Delete button to delete the selected product
         echo "<input type=\"submit\" name=\"deleteProduct\" value=\"Delete Product\">";
 
         echo "</form>";
+    }
+}
+
+// Check if the form is submitted for deleting a product
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["deleteProduct"])) {
+    $selectedProductId = isset($_POST["selectedProductId"]) ? $_POST["selectedProductId"] : null;
+
+    // Delete the product from the database
+    if (deleteProduct(connectToDatabase(), $selectedProductId)) {
+        echo "Product deleted successfully";
+        // Optionally, you can redirect the user or display a message here.
+    } else {
+        echo "Error deleting the product";
     }
 }
 ?>

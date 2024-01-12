@@ -288,3 +288,86 @@ th {
     margin-bottom: 15px; 
 }
 
+/* Admin Dashboard Styles */
+
+.admin-dashboard {
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+.admin-dashboard h2 {
+    margin-bottom: 10px;
+}
+
+.admin-dashboard ul {
+    list-style: none;
+    padding: 0;
+}
+
+.admin-dashboard li {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.admin-dashboard a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    transition: color 0.3s ease;
+}
+
+.admin-dashboard a:hover {
+    color: #ffcc00;
+}
+
+
+body {
+    background-color: black;
+    margin: 0;
+    padding: 0;
+}
+
+/* Form Styles */
+.product-form {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.product-form label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.product-form input,
+.product-form select {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.product-form input[type="submit"] {
+    background-color: #640a0a;
+    color: white;
+    cursor: pointer;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+}
+
+.product-form input[type="submit"]:hover {
+    background-color: #5a0707;
+}
+
+
+
+

@@ -496,7 +496,72 @@ function addUser($username, $email, $password, $isAdmin) {
 }
 
 
+function renderCategoriesDropdown()
+{
+    $categories = getCategories(connectToDatabase());
+
+    foreach ($categories as $category) {
+        echo "<option value=\"{$category['id']}\">{$category['categoryname']}</option>";
+    }
+}
+
+function renderProductsDropdown()
+{
+    $products = getProducts(connectToDatabase());
+
+    foreach ($products as $product) {
+        echo "<option value=\"{$product['id']}\">{$product['name']}</option>";
+    }
+}
+
+function handleFormSubmission()
+{
+    if (isset($_POST["addProduct"])) {
+        // Handle Add Product submission
+        // ...
+    } elseif (isset($_POST["editProduct"])) {
+        // Handle Edit Product submission
+        // ...
+    } elseif (isset($_POST["deleteProduct"])) {
+        // Handle Delete Product submission
+        // ...
+    }
+}
+
+function renderEditDeleteForm()
+{
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["selectProduct"])) {
+        $selectedProductId = isset($_POST["productId"]) ? $_POST["productId"] : null;
+        $selectedProduct = getProductById(connectToDatabase(), $selectedProductId);
+
+        if ($selectedProduct) {
+            echo "<form class=\"product-form\" method=\"post\" action=\"{$_SERVER['PHP_SELF']}\">";
+
+            echo "<label for=\"name\">Product Name:</label>";
+            echo "<input type=\"text\" name=\"name\" value=\"{$selectedProduct['name']}\"><br>";
+
+            echo "<label for=\"categoryid\">Category:</label>";
+            echo "<select name=\"categoryid\" required>";
+            renderCategoriesDropdown();
+            echo "</select><br>";
+
+            echo "<label for=\"price\">Price:</label>";
+            echo "<input type=\"text\" name=\"price\" value=\"{$selectedProduct['price']}\"><br>";
+
+            echo "<label for=\"imagePath\">Image Path:</label>";
+            echo "<input type=\"text\" name=\"imagePath\" value=\"{$selectedProduct['imagePath']}\"><br>";
+
+            echo "<input type=\"submit\" name=\"editProduct\" value=\"Edit Product\">";
+            echo "<input type=\"submit\" name=\"deleteProduct\" value=\"Delete Product\">";
+
+            echo "</form>";
+        }
+    }
+}
+
 ?>
+
+
 
 
 
